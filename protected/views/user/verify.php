@@ -22,13 +22,7 @@ $this->breadcrumbs = array(
 <p>Please enter your verification token to verify your email:</p>
 
 <div class="form">
-<?php $form = $this->beginWidget('CActiveForm', array(
-    'id' => 'verify-form',
-    'enableClientValidation' => true,
-    'clientOptions' => array(
-        'validateOnSubmit' => true,
-    ),
-)); ?>
+<?php echo CHtml::beginForm(); ?>
 
     <div class="row">
         <?php echo CHtml::textField('token', '', array('placeholder' => 'Enter verification token')); ?>
@@ -38,5 +32,5 @@ $this->breadcrumbs = array(
         <?php echo CHtml::submitButton('Verify'); ?>
     </div>
 
-<?php $this->endWidget(); ?>
+<?php echo CHtml::endForm(); ?>
 </div>

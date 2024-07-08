@@ -44,23 +44,25 @@ class UserController extends Controller
 	}
 	public function actionVerify()
 	{
-    		$token = Yii::app()->request->getQuery('token');
+    		$token = Yii::app()->request->getParam('token');
     
-   		if ($token) {
+    		if ($token) {
         		$user = User::model()->findByAttributes(array('verification_token' => $token));
         
-        	if ($user) {
-            		$user->is_verified = 1;
-            		$user->verification_token = null;
-            		if ($user->save()) {
-                		Yii::app()->user->setFlash('success', 'Your email has been verified. You can now log in.');
-                		$this->redirect(array('user/login'));
-            		}
+        		if ($user) {
+            			$user->is_verified = 1;
+            			$user->verification_token = null;
+            			if ($user->save()) {
+                			Yii::app()->user->setFlash('success', 'Your email has been verified. You can now log in.');
+                			$this->redirect(array('user/login'));
+            			} else {
+                			Yii::app()->user->setFlash('error', 'There was an error verifying your email.');
+            			}
         		} else {
             			Yii::app()->user->setFlash('error', 'Invalid verification token.');
         		}
     		}
 
-    		$this->render('verify');
+    	$this->render('verify');
 	}
 }
