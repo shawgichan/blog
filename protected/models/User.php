@@ -36,4 +36,8 @@ class User extends CActiveRecord
             'is_verified' => 'Is Verified',
         );
     }
+public function isAuthenticated()
+{
+    return !Yii::app()->user->isGuest;
+}
 }
