@@ -16,6 +16,7 @@ class User extends CActiveRecord
     {
         return array(
             array('username, password, email', 'required'),
+	    array('is_verified', 'numerical', 'integerOnly'=>true),
             array('username, email', 'unique'),
             array('email', 'email'),
             array('username', 'length', 'max'=>50),
@@ -24,6 +25,15 @@ class User extends CActiveRecord
             array('is_verified', 'boolean'),
         );
     }
+protected function beforeSave()
+{
+    if($this->isNewRecord)
+    {
+        $this->verification_token = Yii::app()->security->generateRandomString();
+        $this->is_verified = 0;
+    }
+    return parent::beforeSave();
+}
 
     public function attributeLabels()
     {

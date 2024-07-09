@@ -63,8 +63,19 @@ class BlogPost extends CActiveRecord
         $criteria->compare('content',$this->content,true);
         $criteria->compare('user_id',$this->user_id);
         $criteria->compare('is_public',$this->is_public);
+	$criteria->compare('likes', $this->likes);
         $criteria->compare('created_at',$this->created_at,true);
         $criteria->compare('updated_at',$this->updated_at,true);
+        
+        if (isset($_GET['date_from']) && isset($_GET['date_to'])) {
+            $criteria->addBetweenCondition('created_at', $_GET['date_from'], $_GET['date_to']);
+        }
+
+        
+        if (isset($_GET['author'])) {
+            $criteria->addCondition('user_id = :author');
+            $criteria->params[':author'] = $_GET['author'];
+        }
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,

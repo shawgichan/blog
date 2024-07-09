@@ -19,6 +19,8 @@ $this->breadcrumbs=array(
     'enableClientValidation'=>true,
     'clientOptions'=>array(
         'validateOnSubmit'=>true,
+        'validateOnChange'=>false,
+        'validateOnType'=>false,
     ),
 )); ?>
 
@@ -55,4 +57,23 @@ $this->breadcrumbs=array(
     </div>
 
 <?php $this->endWidget(); ?>
+<?php
+Yii::app()->clientScript->registerScript('email-check', "
+    $('#RegisterForm_email').blur(function(){
+        $.ajax({
+            url: '".Yii::app()->createUrl('user/validateEmail')."',
+            type: 'POST',
+            data: {RegisterForm: {email: $(this).val()}},
+            dataType: 'json',
+            success: function(data) {
+                if(data.RegisterForm_email) {
+                    $('#RegisterForm_email_em_').html(data.RegisterForm_email[0]).show();
+                } else {
+                    $('#RegisterForm_email_em_').hide();
+                }
+            }
+        });
+    });
+");
+?>
 </div><!-- form -->

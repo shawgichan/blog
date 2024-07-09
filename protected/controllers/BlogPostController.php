@@ -73,14 +73,41 @@ public function accessRules()
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
     }
 
-    public function actionIndex()
-    {
-        $dataProvider=new CActiveDataProvider('BlogPost');
-        $this->render('index',array(
-            'dataProvider'=>$dataProvider,
-        ));
+ //   public function actionIndex()
+ //   {
+ //       $dataProvider=new CActiveDataProvider('BlogPost');
+//        $this->render('index',array(
+//            'dataProvider'=>$dataProvider,
+//        ));
+//    }
+public function actionIndex()
+{
+    $criteria = new CDbCriteria;
+    if (Yii::app()->user->isGuest) {
+        $criteria->condition = 'is_public = 1';
     }
+    
+    $dataProvider = new CActiveDataProvider('BlogPost', array(
+        'criteria' => $criteria,
+    ));
 
+    $this->render('index', array(
+        'dataProvider' => $dataProvider,
+    ));
+}
+    public function actionLike($id)
+    {
+        if (Yii::app()->request->isAjaxRequest && !Yii::app()->user->isGuest) {
+            $model = $this->loadModel($id);
+            $model->likes += 1;
+            if ($model->save()) {
+                echo CJSON::encode(array('status' => 'success', 'likes' => $model->likes));
+            } else {
+                echo CJSON::encode(array('status' => 'error'));
+            }
+            Yii::app()->end();
+        }
+    }
     public function loadModel($id)
     {
         $model=BlogPost::model()->findByPk($id);

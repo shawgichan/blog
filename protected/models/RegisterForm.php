@@ -1,5 +1,4 @@
 <?php
-
 class RegisterForm extends CFormModel
 {
     public $username;
@@ -16,6 +15,7 @@ class RegisterForm extends CFormModel
             array('passwordConfirm', 'compare', 'compareAttribute'=>'password'),
             array('email', 'email'),
             array('username, email', 'unique', 'className'=>'User'),
+            array('email', 'validateEmail'),
         );
     }
 
@@ -27,5 +27,15 @@ class RegisterForm extends CFormModel
             'password' => 'Password',
             'passwordConfirm' => 'Confirm Password',
         );
+    }
+
+    public function validateEmail($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = User::model()->findByAttributes(array('email' => $this->email));
+            if ($user !== null) {
+                $this->addError($attribute, 'Email already in use.');
+            }
+        }
     }
 }
