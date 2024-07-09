@@ -44,16 +44,19 @@ class BlogPost extends CActiveRecord
         );
     }
 
-    protected function beforeSave()
+protected function beforeSave()
+{
+    if(parent::beforeSave())
     {
         if($this->isNewRecord)
+        {
             $this->created_at = new CDbExpression('NOW()');
-        
+        }
         $this->updated_at = new CDbExpression('NOW()');
-        
-        return parent::beforeSave();
+        return true;
     }
-
+    return false;
+}
     public function search()
     {
         $criteria=new CDbCriteria;

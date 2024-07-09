@@ -115,4 +115,22 @@ public function actionIndex()
             throw new CHttpException(404,'The requested page does not exist.');
         return $model;
     }
+protected function beforeAction($action)
+{
+    if (parent::beforeAction($action)) {
+        if (in_array($action->id, array('create', 'update', 'delete'))) {
+            if (Yii::app()->user->isGuest) {
+                $this->redirect(array('site/login'));
+                return false;
+            }
+            if (!Yii::app()->user->getState('is_verified')) {
+                Yii::app()->user->setFlash('error', 'Your account needs to be verified before you can perform this action.');
+                $this->redirect(array('site/index'));
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
 }
